@@ -23,11 +23,13 @@ namespace aresskit
         public static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
+            string ipList = default(string);
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    return ip.ToString();
+                    ipList += ip.ToString() + "\n";
             }
+            return ipList;
             throw new Exception("Local IP Address Not Found!");
         }
 
@@ -38,7 +40,6 @@ namespace aresskit
                 client.Headers.Add("user-agent", "curl");
                 return client.DownloadString("http://ipinfo.io/");
             }
-            // return new WebClient().DownloadString("ipinfo.io");
         }
     }
 }
