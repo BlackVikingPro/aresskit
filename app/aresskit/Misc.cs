@@ -15,22 +15,25 @@ namespace aresskit
         public static string ShowMethods(Type type)
         {
             string helpMenu = default(string);
-            foreach (var method in type.GetMethods())
+            if (type.Name != "Core" && type.Name != "Misc")
             {
-                var parameters = method.GetParameters();
-                var parameterDescriptions = string.Join
-                    (", ", method.GetParameters()
-                    .Select(x => x.ParameterType + " " + x.Name).ToArray());
-
-                if (parameterDescriptions.ToString().Contains("System.Object") == false ||
-                        method.Name.ToString() != "ToString" ||
-                        method.Name.ToString() != "GetHashCode" ||
-                        method.Name.ToString() != "GetType")
+                foreach (var method in type.GetMethods())
                 {
-                    if (parameterDescriptions == "")
-                        helpMenu += type.Name + "::" + method.Name + "\n";
-                    else
-                        helpMenu += type.Name + "::" + method.Name + " (" + parameterDescriptions + ")\n";
+                    var parameters = method.GetParameters();
+                    var parameterDescriptions = string.Join
+                        (", ", method.GetParameters()
+                        .Select(x => x.ParameterType + " " + x.Name).ToArray());
+
+                    if (parameterDescriptions.ToString().Contains("System.Object") == false &&
+                            method.Name.ToString() != "ToString" &&
+                            method.Name.ToString() != "GetHashCode" &&
+                            method.Name.ToString() != "GetType")
+                    {
+                        if (parameterDescriptions == "")
+                            helpMenu += type.Name + "::" + method.Name + "\n";
+                        else
+                            helpMenu += type.Name + "::" + method.Name + " (" + parameterDescriptions + ")\n";
+                    }
                 }
             }
             return helpMenu;
