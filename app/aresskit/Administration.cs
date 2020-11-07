@@ -1,12 +1,13 @@
-﻿using System.Security.Principal;
+﻿using System.Diagnostics;
+using System.Security.Principal;
 
 namespace aresskit
 {
     class Administration
     {
-        public bool FirewallStatus(bool option)
+        public bool FirewallStatus(string option)
         {
-            if (option == true)
+            if (option == "True" || option == "true")
             {
                 return aresskit.Toolkit.exec("NetSh AdvFirewall Set AllProfiles State On").Contains("Ok.") ? true : false;
             }
@@ -17,10 +18,28 @@ namespace aresskit
         }
 
         // Thanks to: http://stackoverflow.com/a/11660205/5925502
-        public bool IsAdmin()
+        public bool isAdmin()
         {
             return (new WindowsPrincipal(WindowsIdentity.GetCurrent()))
                     .IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
+        public void becomeAdmin()
+        {
+            if (isAdmin() == false)
+            {
+                ProcessStartInfo processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd",
+                    Verb = "runas",
+                    Arguments = "/k START \"\" \"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\" & EXIT",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = true
+                };
+
+                Process.Start(processStartInfo);
+                Toolkit.exec("taskkill /PID " + Process.GetCurrentProcess().Id.ToString() + "\n");
+            }
         }
 
         // Thanks to: http://stackoverflow.com/a/11145280/5925502
